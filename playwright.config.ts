@@ -26,7 +26,7 @@ export default defineConfig({
     
     // Задержка между шагами: 1.5 сек локально, 0 сек в CI
     launchOptions: {
-      slowMo: isCI ? 500 : 1500,
+      slowMo: isCI ? 1000 : 1500,
     }
   },
 
@@ -41,7 +41,7 @@ export default defineConfig({
         deviceScaleFactor: undefined,
         launchOptions: {
           args: ['--start-maximized'],
-          slowMo: isCI ? 500 : 1500
+          slowMo: isCI ? 1000 : 1500
         }
       },
     },
@@ -54,7 +54,7 @@ export default defineConfig({
         viewport: null, 
         deviceScaleFactor: undefined,
         launchOptions: {
-          slowMo: isCI ? 500 : 1500,
+          slowMo: isCI ? 1000 : 1500,
           args: ['-start-maximized'] // Флаг окна для Firefox
         }
       },
