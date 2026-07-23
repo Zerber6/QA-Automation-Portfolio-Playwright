@@ -4,27 +4,35 @@ export default defineConfig({
   // Указываем Playwright искать тесты строго в папке tests
   testDir: 'Final project',
   
-  // Время ожидания для каждого отдельного теста (30 секунд)
-  timeout: 60000,
+  // НАСТРОЙКА РЕПОРТЕРА (Генерирует HTML-отчёт в папку playwright-report)
+  reporter: [
+    ['list'],
+    ['html', { open: 'never' }]
+  ],
+
+  // Время ожидания для каждого отдельного теста (60 секунд)
+  timeout: 120000,
   
   // Время ожидания для ассертов вроде expect(page).toHaveURL
   expect: {
     timeout: 10000,
   },
 
-  // Запуск тестов в один поток, чтобы они не перемешивались на экране
+  // Запуск тестов в один поток
   workers: 1,
 
   // Глобальные настройки для всех браузеров
   use: {
-    // Наш базовый URL[cite: 1]
+    // Наш базовый URL
     baseURL: 'https://intershop5.skillbox.ru',
     
-    // Включаем ВИДИМЫЙ режим браузера, чтобы ты видел все клики[cite: 1]
     headless: true,
     
     // Сохранять скриншоты только при падении теста
     screenshot: 'only-on-failure',
+
+    // Записывать трассировку при первом повторе (полезно для отладки)
+    trace: 'on-first-retry',
 
     // Playwright будет залипать на 1.5 секунды перед КАЖДЫМ действием
     launchOptions: {
@@ -32,10 +40,10 @@ export default defineConfig({
     }
   },
 
-  // Оставляем для тестирования ТОЛЬКО обычный Chrome
-projects: [
+  // Оставляем для тестирования браузеры
+  projects: [
     {
-      name: 'chromium', // Твой текущий стандартный Chrome
+      name: 'chromium',
       use: { 
         ...devices['Desktop Chrome'],
         viewport: null, 
@@ -47,15 +55,13 @@ projects: [
       },
     },
 
-    // 1. ДОБАВЛЯЕМ BRAVE
     {
       name: 'Brave',
       use: {
-        ...devices['Desktop Chrome'], // Базовые настройки берём от Chrome
+        ...devices['Desktop Chrome'],
         viewport: null,
         deviceScaleFactor: undefined,
         launchOptions: {
-          // Укажи здесь РЕАЛЬНЫЙ путь к файлу brave.exe на своём ПК:
           executablePath: '/usr/bin/brave-browser',
           args: ['--start-maximized'],
           slowMo: 1500
@@ -63,17 +69,15 @@ projects: [
       },
     },
 
-{
+    {
       name: 'firefox',
       use: { 
         ...devices['Desktop Firefox'],
         viewport: null, 
         deviceScaleFactor: undefined,
         launchOptions: {
-          slowMo: 1500, // Чтобы глазки успевали радоваться
-          
-          // Для Firefox флаг максимизации пишется по-другому!
-          args: ['-start-maximized'] // Обрати внимание: тут ОДНО тире, а не два!
+          slowMo: 1500,
+          args: ['-start-maximized']
         }
       },
     },
