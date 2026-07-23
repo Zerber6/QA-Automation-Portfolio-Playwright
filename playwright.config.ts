@@ -1,19 +1,16 @@
 import { defineConfig, devices } from '@playwright/test';
 
-export default defineConfig({
-  // Указываем Playwright искать тесты строго в папке tests
-  testDir: 'Final project',
-  
-  // НАСТРОЙКА РЕПОРТЕРА (Генерирует HTML-отчёт в папку playwright-report)
-  reporter: [
-    ['list'],
-    ['html', { open: 'never' }]
-  ],
+// Проверяем, запущен ли код в CI (GitHub Actions), с обходом строгих типов TypeScript
+const isCI = Boolean((globalThis as any).process?.env?.CI);
 
-  // Время ожидания для каждого отдельного теста (60 секунд)
+export default defineConfig({
+  // Папка с тестами
+  testDir: 'Final project',
+
+  // Таймаут на один тест (120 секунд для медленной сети в CI)
   timeout: 120000,
-  
-  // Время ожидания для ассертов вроде expect(page).toHaveURL
+
+  // Таймаут для ассертов expect(...)
   expect: {
     timeout: 10000,
   },
@@ -21,27 +18,21 @@ export default defineConfig({
   // Запуск тестов в один поток
   workers: 1,
 
-  // Глобальные настройки для всех браузеров
+  // Глобальные настройки браузеров
   use: {
-    // Наш базовый URL
     baseURL: 'https://intershop5.skillbox.ru',
+    headless: true, // Фоновый режим для скорости
+    screenshot: 'only-on-failure', // Скриншот только при ошибке
     
-    headless: true,
-    
-    // Сохранять скриншоты только при падении теста
-    screenshot: 'only-on-failure',
-
-    // Записывать трассировку при первом повторе (полезно для отладки)
-    trace: 'on-first-retry',
-
-    // Playwright будет залипать на 1.5 секунды перед КАЖДЫМ действием
+    // Задержка между шагами: 1.5 сек локально, 0 сек в CI
     launchOptions: {
-      slowMo: 1500, 
+      slowMo: isCI ? 0 : 1500,
     }
   },
 
-  // Оставляем для тестирования браузеры
+  // Проекты браузеров для запуска
   projects: [
+    // 1. Google Chrome (Chromium)
     {
       name: 'chromium',
       use: { 
@@ -50,25 +41,12 @@ export default defineConfig({
         deviceScaleFactor: undefined,
         launchOptions: {
           args: ['--start-maximized'],
-          slowMo: 1500 
+          slowMo: isCI ? 0 : 1500
         }
       },
     },
 
-    {
-      name: 'Brave',
-      use: {
-        ...devices['Desktop Chrome'],
-        viewport: null,
-        deviceScaleFactor: undefined,
-        launchOptions: {
-          executablePath: '/usr/bin/brave-browser',
-          args: ['--start-maximized'],
-          slowMo: 1500
-        }
-      },
-    },
-
+    // 2. Mozilla Firefox
     {
       name: 'firefox',
       use: { 
@@ -76,10 +54,25 @@ export default defineConfig({
         viewport: null, 
         deviceScaleFactor: undefined,
         launchOptions: {
-          slowMo: 1500,
-          args: ['-start-maximized']
+          slowMo: isCI ? 0 : 1500,
+          args: ['-start-maximized'] // Флаг окна для Firefox
         }
       },
     },
+
+    // 3. Brave (включается ТОЛЬКО на локальном ПК, пропускается в CI)
+    ...(isCI ? [] : [{
+      name: 'Brave',
+      use: {
+        ...devices['Desktop Chrome'],
+        viewport: null,
+        deviceScaleFactor: undefined,
+        launchOptions: {
+          executablePath: '/usr/bin/brave-browser', // Локальный путь к Brave в Linux
+          args: ['--start-maximized'],
+          slowMo: 1500
+        }
+      },
+    }]),
   ],
 });
