@@ -21,7 +21,7 @@ export default defineConfig({
     baseURL: 'https://intershop5.skillbox.ru',
     
     // Включаем ВИДИМЫЙ режим браузера, чтобы ты видел все клики[cite: 1]
-    headless: false,
+    headless: true,
     
     // Сохранять скриншоты только при падении теста
     screenshot: 'only-on-failure',
