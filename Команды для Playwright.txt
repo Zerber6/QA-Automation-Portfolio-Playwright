@@ -1,0 +1,59 @@
+npm init playwright@latest - установка всего необходимого для Playwright
+
+подсказки для браузеров: 
+
+  /* Configure projects for major browsers */
+  projects: [
+    {
+      name: 'chromium',
+      use: { ...devices['Desktop Chrome'] },
+    },
+
+    {
+      name: 'firefox',
+      use: { ...devices['Desktop Firefox'] },
+    },
+
+    {
+      name: 'webkit',
+      use: { ...devices['Desktop Safari'] },
+    },
+
+подсказки для браузеров телефонов:
+
+    /* Test against mobile viewports. */
+    // {
+    //   name: 'Mobile Chrome',
+    //   use: { ...devices['Pixel 5'] },
+    // },
+    // {
+    //   name: 'Mobile Safari',
+    //   use: { ...devices['iPhone 12'] },
+    // },
+
+    /* Test against branded browsers. */
+    // {
+    //   name: 'Microsoft Edge',
+    //   use: { ...devices['Desktop Edge'], channel: 'msedge' },
+    // },
+    // {
+    //   name: 'Google Chrome',
+    //   use: { ...devices['Desktop Chrome'], channel: 'chrome' },
+    // },
+	
+сервер для разработки:
+
+  /* Run your local dev server before starting the tests */
+  // webServer: {
+  //   command: 'npm run start',
+  //   url: 'http://localhost:3000',
+  //   reuseExistingServer: !process.env.CI,
+  // },
+  
+npx playwright test "Final project \(new\)/Home Page/Go to the book page.spec.js" - пример команды для запуска
+
+npx playwright test "Final project \(new\)" --project=chromium - запуск отжельного движка (Хром, Брэйв но без Firefox).
+
+npx playwright test "Final project \(new\)" - пример запуска всех тестов.
+
+npx playwright test "Final project \(new\)/Catalog/" - пример запуска папки внутри папки

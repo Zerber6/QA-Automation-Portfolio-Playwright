@@ -1,0 +1,20 @@
+# Зависимости Node.js (НИКОГДА не пушим в гит)
+node_modules/
+
+# Результаты тестов и отчёты Playwright
+test-results/
+playwright-report/
+blob-report/
+playwright/.cache/
+
+# Системные файлы Linux / macOS / Windows
+test.js
+.DS_Store
+Thumbs.db
+
+# Логи и временные файлы
+*.log
+.env
+.txt
+.zip
+.pdf

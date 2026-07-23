@@ -1,0 +1,27 @@
+{
+  "name": "intershop-tests",
+  "version": "1.0.0",
+  "description": "Автотесты для Intershop",
+  "main": "test.js",
+  "type": "module",
+"scripts": {
+    "test:all": "npx playwright test \"Final project\"",
+    "test:debug": "npx playwright test --debug",
+    "test:ui": "npx playwright test --ui",
+    "test:home": "npx playwright test \"Final project/Home Page\"",
+    "test:catalog": "npx playwright test \"Final project/Catalog\"",
+    "test:cart": "npx playwright test \"Final project/Cart\"",
+    "test:auth-reg": "npx playwright test \"Final project/Registration and Authorization\"",
+    "test:order": "npx playwright test \"Final project/Placing an order\""
+  },
+  "author": "Nikita QA",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^1.12.2",
+    "chai": "^5.0.0"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.61.0",
+    "@types/node": "^26.0.0"
+  }
+}
