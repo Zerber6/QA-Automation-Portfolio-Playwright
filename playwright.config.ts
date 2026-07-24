@@ -1,36 +1,36 @@
 import { defineConfig, devices } from '@playwright/test';
 
-// Проверяем, запущен ли код в CI (GitHub Actions), с обходом строгих типов TypeScript
+// Проверяем, запущен ли код в CI (GitHub Actions)
 const isCI = Boolean((globalThis as any).process?.env?.CI);
 
 export default defineConfig({
-  // Папка с тестами
   testDir: 'Final project',
 
-  // Таймаут на один тест (120 секунд для медленной сети в CI)
+  // Таймаут на один тест (120 секунд)
   timeout: 120000,
 
-  // Таймаут для ассертов expect(...)
   expect: {
     timeout: 10000,
   },
 
-  // Запуск тестов в один поток
   workers: 1,
 
-  // Глобальные настройки браузеров
+  // Глобальные настройки
   use: {
     baseURL: 'https://intershop5.skillbox.ru',
-    headless: true, // Фоновый режим для скорости
-    screenshot: 'only-on-failure', // Скриншот только при ошибке
+    headless: isCI ? true : false, // На ПК с окном, в CI — в фоне
+    screenshot: 'only-on-failure',
     
-    // Задержка между шагами: 1.5 сек локально, 0 сек в CI
+    // Таймауты на действия и переходы
+    actionTimeout: 15000,
+    navigationTimeout: 60000, // Дадим 60 сек на долгие переходы через VPN/CI
+    
+    // Единый slowMo для всех режимов
     launchOptions: {
-      slowMo: isCI ? 1000 : 1500,
+      slowMo: 1500,
     }
   },
 
-  // Проекты браузеров для запуска
   projects: [
     // 1. Google Chrome (Chromium)
     {
@@ -41,7 +41,6 @@ export default defineConfig({
         deviceScaleFactor: undefined,
         launchOptions: {
           args: ['--start-maximized'],
-          slowMo: isCI ? 1000 : 1500
         }
       },
     },
@@ -54,13 +53,12 @@ export default defineConfig({
         viewport: null, 
         deviceScaleFactor: undefined,
         launchOptions: {
-          slowMo: isCI ? 1000 : 1500,
-          args: ['-start-maximized'] // Флаг окна для Firefox
+          args: ['-start-maximized']
         }
       },
     },
 
-    // 3. Brave (включается ТОЛЬКО на локальном ПК, пропускается в CI)
+    // 3. Brave (только локально)
     ...(isCI ? [] : [{
       name: 'Brave',
       use: {
@@ -68,9 +66,8 @@ export default defineConfig({
         viewport: null,
         deviceScaleFactor: undefined,
         launchOptions: {
-          executablePath: '/usr/bin/brave-browser', // Локальный путь к Brave в Linux
+          executablePath: '/usr/bin/brave-browser',
           args: ['--start-maximized'],
-          slowMo: 1500
         }
       },
     }]),
